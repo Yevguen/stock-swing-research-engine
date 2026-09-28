@@ -1,0 +1,217 @@
+universe_methodology_version: "0.1"
+historical_research_eligibility_implementation_version: "0.1"
+
+relationship_to_research_rules:
+  research_rules_file: "config/research_rules.yaml"
+  research_framework_version: "0.1"
+  refined_scope: "U.S.-listed large-cap, highly liquid stocks"
+  changes_phase_1_research_rules: false
+
+market_and_security_scope:
+  market: "United States"
+  scope: "U.S.-listed equities"
+  security_type: "Individual common stocks"
+  initial_style: "Large-cap and highly liquid"
+  excluded_instruments:
+    - "ETFs"
+    - "Funds"
+    - "Preferred shares"
+    - "OTC securities"
+    - "Options"
+    - "Futures"
+    - "CFDs"
+    - "Forex"
+    - "Other derivatives"
+  unresolved_eligibility_questions:
+    adrs:
+      status: "unresolved_pending_norgate_trial_metadata_validation"
+      question: "Whether ADRs are eligible"
+    reits:
+      status: "unresolved_pending_norgate_trial_metadata_validation"
+      question: "Whether REITs are eligible"
+    other_special_equity_categories:
+      status: "unresolved_pending_norgate_trial_metadata_validation"
+      question: "Which other special equity categories, if any, are eligible"
+    resolution_required_before_production_universe_builder: true
+    classification_must_not_be_assumed_before_resolution: true
+
+development_universe:
+  target_size:
+    approximate_range: "30-50 stocks"
+  exact_ticker_symbols: "not_yet_defined"
+  purpose:
+    - "Software development"
+    - "Data-pipeline validation"
+    - "Backtester development"
+    - "Portfolio-engine development"
+    - "Preliminary experiments"
+  selection_requirements:
+    objective_rules_required: true
+    reproducible_rules_required: true
+    selection_based_on_known_later_historical_performance_prohibited: true
+  research_limitations:
+    considered_survivorship_bias_free: false
+    results_must_not_be_presented_as_robust_historical_evidence_of_strategy_profitability: true
+
+historical_research_universe:
+  target_size: 50
+  point_in_time_universe_required: true
+  base_index:
+    name: "Russell 1000"
+    methodology: "point_in_time"
+    membership_required: true
+  eligibility_basis: >-
+    Eligibility is based on Russell 1000 membership on the relevant historical
+    date.
+  projecting_todays_russell_1000_membership_backward_prohibited: true
+  former_constituents_retained_during_historically_eligible_periods: true
+  delisted_securities_retained_during_historically_eligible_periods: true
+  russell_1000_membership_supplies_large_cap_size_criterion: true
+  separate_numerical_market_cap_threshold_applied: false
+  eligibility_must_be_evaluated_for_the_relevant_historical_date: true
+  only_information_available_at_that_historical_date_may_be_used: true
+  survivorship_bias_must_be_explicitly_controlled: true
+  disappeared_company_policy: >-
+    Companies that were acquired, failed, merged, or otherwise disappeared must
+    not vanish from periods in which they were historically eligible.
+
+provider:
+  provider_name: "Norgate Data"
+  package: "US Stocks Platinum"
+  access_method: "Python on Windows"
+  provider_status: "selected_subject_to_trial_integration_validation"
+  used_for:
+    - "Point-in-time Russell 1000 membership"
+    - "Historical D1 price and volume data"
+    - "Currently listed securities"
+    - "Former/delisted securities"
+    - "Historical major-exchange listing status"
+    - "Stable security identity"
+  trial_integration_validation_required: true
+  trial_integration_validation_completed: true
+  trial_minimum_verifications:
+    - "Python access works in this Windows project environment"
+    - "Russell 1000 historical constituent queries work"
+    - "AssetId is accessible and stable"
+    - "Historical major-exchange status can be queried"
+    - "Delisted/former securities can be accessed"
+    - "Required unadjusted D1 close and raw volume can be obtained for ADTV60"
+    - "Provider symbol semantics are understood"
+  data_lifecycle:
+    subscription_lapse_deletion_obligation_accepted: true
+    obligation: >-
+      If the relevant subscription lapses, the project must delete Norgate Data
+      and related Derived Data.
+    applies_to_datasets_generated_from_norgate_data: true
+    licensing_review_required_before_future_redistribution_publication_or_commercial_use: true
+
+security_identity:
+  provider_identifier: "Norgate AssetId"
+  project_model_field: "StockUniverseMember.security_id"
+  mapping: "Norgate AssetId → StockUniverseMember.security_id"
+  project_representation: "NORGATE:<AssetId>"
+  example_only: "NORGATE:12345"
+  security_id_is_authoritative_identity_key: true
+  ticker_symbol_must_never_be_used_as_permanent_security_identity: true
+  security_id_remains_stable_through_ticker_and_name_changes: true
+  symbol_policy:
+    symbol_is_informational_display_metadata: true
+    exact_historical_ticker_reconstruction_in_phase_3b_v0_1: false
+    provider_symbol_mapping_validation_required_before_universe_builder: >-
+      Trial integration must verify how provider symbols map to historical
+      membership records before the universe builder is implemented.
+
+major_exchange_eligibility:
+  major_exchange_listing_required_on_relevant_historical_date: true
+  source: "Norgate historical major-exchange listing status"
+  exact_eligible_exchanges:
+    - "NYSE"
+    - "Nasdaq"
+    - "NYSE American"
+    - "NYSE Arca"
+    - "Cboe BZX"
+    - "IEX"
+  otc_trading_satisfies_rule: false
+  ineligible_immediately_when_historical_major_exchange_rule_ceases_to_be_satisfied: true
+  intramonth_replacement_after_exchange_removal: false
+  replacement_timing: "Next monthly ranking"
+
+selection_policy:
+  performance_based_stock_selection_prohibited: true
+  subjective_cherry_picking_of_historically_successful_companies_prohibited: true
+  size_eligibility_required: true
+  liquidity_eligibility_required: true
+  historical_reproducibility_requirement: >-
+    Eligibility rules must be reproducible from historical information available
+    at the time.
+  prohibited_selection_inputs:
+    - "Return"
+    - "Profit"
+    - "Sharpe ratio"
+    - "Momentum strategy result"
+    - "Future performance"
+
+liquidity_methodology:
+  preferred_liquidity_measure: "ADTV60"
+  lookback_sessions: 60
+  daily_dollar_volume_formula: "unadjusted_close × raw_volume"
+  adtv60_definition: >-
+    The arithmetic mean of daily dollar volume across the previous 60 valid
+    completed regular-session D1 bars, including the completed ranking-date bar.
+  exactly_60_valid_completed_bars_required: true
+  fewer_than_60_valid_bars_policy: "Security cannot be ranked for that monthly selection"
+  information_cutoff: "Completed ranking date"
+  only_information_available_through_completed_ranking_date_may_be_used: true
+  future_bars_prohibited: true
+  strategy_returns_or_performance_prohibited: true
+  rule_type: "ranking_not_fixed_dollar_threshold"
+  exact_numerical_liquidity_threshold: "not_applicable_top_50_ranking_used"
+
+monthly_selection:
+  universe_review_and_rebalancing_frequency: "Monthly"
+  ranking_date: "Last completed U.S. trading session of each calendar month"
+  candidate_requirements:
+    - "Point-in-time Russell 1000 member on the ranking date"
+    - "Satisfies the historical major-exchange rule on the ranking date"
+    - "Has 60 valid completed regular-session D1 bars through the ranking date"
+  calculation: "Calculate ADTV60 for every eligible candidate"
+  primary_rank_order: "ADTV60 descending"
+  deterministic_tie_break: "security_id ascending"
+  historical_return_or_future_performance_tie_break_prohibited: true
+  selection_count: 50
+  fewer_than_50_qualifying_securities_policy: "Select all qualifying securities"
+  effective_date: "Following U.S. trading session"
+  no_look_ahead_rule: "T -> T+1"
+
+between_monthly_rankings:
+  selected_security_remains_liquidity_qualified_until_next_monthly_ranking: true
+  daily_eligibility_gates:
+    - "Continuing point-in-time Russell 1000 membership"
+    - "Continuing major-exchange-listed status"
+  if_either_daily_gate_becomes_false: "eligible = false immediately for the applicable historical date"
+  automatically_promote_rank_51: false
+  replacement_timing: "Next monthly ranking"
+  eligible_universe_may_temporarily_contain_fewer_than_50_securities: true
+
+size_methodology:
+  large_cap_status_required: true
+  large_cap_representation: "Point-in-time Russell 1000 membership"
+  separate_project_calculated_historical_market_cap_threshold: false
+  separate_project_calculated_market_cap_ranking: false
+  exact_market_cap_threshold: "not_applicable_separately_in_v0.1"
+  exact_market_cap_methodology: "not_applicable_separately_in_v0.1"
+
+sector_policy:
+  fixed_sector_quotas_initially: false
+  manually_choosing_a_fixed_number_of_stocks_per_sector_prohibited: true
+  sector_ranking_or_filtering_used: false
+  eligibility_determined_by_objective_universe_rules: true
+  resulting_sector_composition_must_eventually_be_measured_and_reported: true
+  portfolio_sector_concentration_controls_layer: "Future portfolio layer"
+  initial_universe_cherry_picking_for_sector_concentration_prohibited: true
+
+point_in_time_policy:
+  universe_membership_must_be_date_aware: true
+  membership_records_must_support_historical_date_eligibility_queries: true
+  current_information_must_not_determine_historical_eligibility: true
+  historical_membership_source: "Norgate Data point-in-time Russell 1000 membership"

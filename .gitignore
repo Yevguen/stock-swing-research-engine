@@ -1,0 +1,54 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local environment and secrets (an example file may be committed)
+.env
+.env.*
+!.env.example
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Test and tooling caches
+.pytest_cache/
+.hypothesis/
+.test-temp/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# IDE, editor and local AI-assistant state
+.idea/
+.vscode/
+*.swp
+*.swo
+.claude/
+.codex/
+Claude outputs/
+
+# Generated or licensed market data: pipeline output roots only
+/data/raw/*
+!/data/raw/.gitkeep
+/data/clean/*
+!/data/clean/.gitkeep
+/data/corporate_actions/*
+!/data/corporate_actions/.gitkeep
+/data/earnings/*
+!/data/earnings/.gitkeep
+/data/parquet/*
+!/data/parquet/.gitkeep
+/data/dividends/
+
+# Generated reports
+/reports/*
+!/reports/.gitkeep

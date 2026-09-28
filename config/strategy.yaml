@@ -1,0 +1,48 @@
+# Canonical baseline strategy configuration v0.1.
+#
+# This file is a CHECKED DECLARATION, not a runtime authority.
+#
+# Nothing on the signal, sizing, or exit path reads this file. The frozen
+# owners below remain the single semantic authority for baseline behaviour:
+#
+#   entry conditions / price basis  ->  strategy/baseline/service.py   (Phase 8)
+#   indicator windows               ->  indicators/calculator.py       (Phase 7)
+#   target risk fraction            ->  risk/position_sizing/service.py (Phase 11)
+#   stop / take-profit geometry     ->  execution/protective_exit/     (Phase 10)
+#   maximum holding sessions        ->  execution/open_position_exit/  (Phase 15B)
+#
+# Loading this file validates it and then rejects it outright unless it equals
+# those authoritative owners, so editing a value here cannot change a trading
+# decision -- it can only fail to load. These values are frozen framework
+# semantics, not optimization parameters: tuned_parameter_count is exactly 0.
+
+schema_version: "baseline_strategy_configuration.v0.1"
+configuration_id: "baseline_strategy_v0.1"
+tuned_parameter_count: 0
+
+decision_inputs:
+  signal_price_basis: "capital_special_adjusted"
+  sma_fast_period: 20
+  sma_slow_period: 50
+  rsi_period: 14
+  atr_period: 14
+
+entry_conditions:
+  close_above_sma_slow_required: true
+  sma_fast_above_sma_slow_required: true
+  rsi_minimum: 50.0
+  rsi_comparison: "strictly_greater_than"
+  atr_minimum_fraction: 0.01
+  atr_comparison: "greater_than_or_equal"
+  universe_eligibility_required: true
+  earnings_entry_permission_required: true
+
+chronology:
+  trade_direction: "LONG_ONLY"
+  entry_execution_offset_sessions: 1
+  maximum_holding_sessions: 10
+
+risk:
+  target_risk_fraction: 0.005
+  stop_risk_atr_multiple: 2.0
+  take_profit_r_multiple: 2.0

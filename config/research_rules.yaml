@@ -1,0 +1,117 @@
+framework_version: "0.1"
+
+research_framework:
+  project_type: "Systematic stock swing trading research and backtesting"
+  purpose: "These rules define the initial experimental framework."
+  optimization_parameter_status: "These framework rules are not optimization parameters."
+
+market_and_instruments:
+  market: "United States"
+  instrument_class: "Individual company equities / stocks"
+  initial_scope: "U.S.-listed large-cap, highly liquid stocks"
+  initially_excluded_instruments:
+    - "ETFs"
+    - "Funds"
+    - "Options"
+    - "Futures"
+    - "CFDs"
+    - "Forex"
+    - "Other derivatives"
+  exact_stock_universe:
+    defined: false
+    definition_file: "config/universe.yaml"
+    rules_to_define_separately:
+      - "Exact eligibility rules"
+      - "Exact liquidity rules"
+      - "Exact exchange rules"
+      - "Exact market-cap rules"
+      - "Exact historical-universe rules"
+
+trading_direction:
+  permitted_direction: "LONG only"
+  short_selling_allowed: false
+
+leverage:
+  leverage_allowed: false
+  position_funding: "Cash positions only"
+  borrowed_capital_allowed: false
+  margin_exposure_allowed: false
+
+timeframe:
+  timeframe_code: "D1"
+  candle_interval: "Daily candles"
+
+signal_timing:
+  completed_candles_only: true
+  decision_data_rule: "Trading decisions may use only completed Daily candles."
+  incomplete_current_session_d1_data_allowed: false
+  earliest_execution_rule: "A signal generated from trading day T may be executed no earlier than trading session T+1."
+  purpose: "Prevent look-ahead bias."
+
+execution:
+  permitted_session_initially: "Regular market session only"
+  extended_hours_execution_allowed_initially: false
+  entry_price_modelling_status: "To be implemented later"
+  exit_price_modelling_status: "To be implemented later"
+
+holding_horizon:
+  intended_swing_horizon: "Approximately 2 to 10 trading days"
+  maximum_holding_period: "10 trading days initially"
+  two_trading_day_minimum_required: false
+  early_exit_policy: "Risk-management exits or other valid exit rules may close a position earlier."
+
+overnight_and_weekend_holding:
+  overnight_holding_allowed: true
+  weekend_holding_allowed: true
+
+earnings:
+  holding_through_scheduled_earnings_allowed_initially: false
+  intentional_holding_policy: "Do not intentionally hold an individual stock through a scheduled earnings announcement."
+  future_entry_requirement: "New entries must eventually be blocked when scheduled earnings conflict with the permitted holding window."
+  future_existing_position_requirement: "Existing positions must eventually be exited before a scheduled earnings announcement."
+  exact_earnings_buffer_and_timing_rules:
+    defined: false
+    optimized: false
+
+per_symbol_position_rule:
+  maximum_open_positions_per_symbol: 1
+  multiple_independent_simultaneous_trades_in_same_stock_allowed: false
+
+portfolio:
+  simultaneous_positions_in_different_symbols_allowed: true
+  exact_maximum_concurrent_positions_defined: false
+  exact_portfolio_allocation_rules_defined: false
+
+gap_risk:
+  overnight_gap_handling_required: true
+  future_backtester_gap_through_stop_requirement: "Model gap-through-stop execution realistically."
+  future_backtester_other_gap_execution_requirement: "Model other relevant gap executions realistically."
+  stop_price_guaranteed_when_market_opens_beyond_stop: false
+  exact_execution_and_slippage_formulas_defined: false
+
+risk:
+  risk_per_trade_must_be_configurable: true
+  numerical_risk_percentage_defined: false
+  numerical_risk_percentage_optimization_allowed_initially: false
+  position_sizing_rules_status: "To be implemented later"
+
+transaction_costs:
+  modelling_required: true
+  assumptions_file: "config/costs.yaml"
+  exact_values_defined: false
+
+slippage:
+  modelling_required: true
+  assumptions_file: "config/costs.yaml"
+  exact_values_defined: false
+
+corporate_actions:
+  stock_split_requirement: "Stock splits must be handled correctly before historical strategy testing."
+  other_relevant_corporate_actions_requirement: "Other relevant corporate actions must also be handled correctly."
+  implementation_status: "Deferred to later data-processing phases"
+
+optimization_policy:
+  fundamental_framework_rules_optimized_during_initial_research: false
+  future_strategy_parameters_policy: "Future strategy parameters may be tested and optimized separately."
+  framework_change_policy: "Changes to the fundamental research framework must be deliberate."
+  framework_changes_must_be_versioned: true

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock_swing_d1"
+version = "0.1.0"
+description = "Deterministic research and backtesting engine for long-only, unleveraged D1 US equity swing-trading research. Research software; not investment advice."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+test = [
+    "hypothesis",
+    "pytest",
+    "pytest-cov",
+]
+norgate = [
+    "norgatedata>=1.0.77",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "hard_gate: authoritative Phase 6C.8A acceptance gate",
+    "hard_gate_6c8b: authoritative Phase 6C.8B earnings-risk integration acceptance gate",
+    "provider_acceptance: acceptance gates that require licensed provider sample data",
+]

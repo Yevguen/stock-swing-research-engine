@@ -1,0 +1,21 @@
+schema_version: "backtest_execution_cost_policy.v0.1"
+policy_id: "broker_neutral_us_large_cap_execution_cost_v0.1"
+currency: "USD"
+
+slippage:
+  entry_bps: 5
+  protective_exit_bps: 5
+  administrative_exit_bps: 5
+
+spread:
+  model: "fixed_cash_equivalent_bps_per_side"
+  bps_per_side: 1
+
+commission:
+  model: "per_share_with_minimum_and_notional_cap"
+  per_share_usd: "0.005"
+  minimum_per_order_usd: "1.00"
+  maximum_fraction_of_notional: "0.01"
+
+settlement:
+  model: "historical_us_equity_standard_cycle"
