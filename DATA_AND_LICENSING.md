@@ -20,6 +20,8 @@ The `norgatedata` Python package is not bundled; it is declared only as the opti
 
 This project is not affiliated with, endorsed by or sponsored by Norgate Data. Provider, index and product names are used only to identify integration targets and methodology, and remain the property of their owners.
 
+Provider information is available from the [Norgate Data website](https://norgatedata.com/).
+
 ## Test data
 
 Test fixtures use invented security identifiers and market values. Real ticker symbols or index names that appear are used only as format examples or benchmark names and are not paired with provider data.
